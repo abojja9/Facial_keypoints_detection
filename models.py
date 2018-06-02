@@ -57,16 +57,22 @@ class Net(nn.Module):
         ## TODO: Define the feedforward behavior of this model
         ## x is the input image and, as an example, here you may choose to include a pool/conv step:
 #         print (x)
-        x = self.pool1(F.relu(self.conv1(x)))
-        x = self.drop1(x)
+        x = self.pool1(F.leaky_relu(self.conv1(x)))
+#         x = self.drop1(x)
+      
+        x = self.pool1(F.leaky_relu(self.conv2_bn(self.conv2(x))))
         
-        x = self.drop2(self.pool1(F.relu(self.conv2_bn(self.conv2(x)))))
-        x = self.drop3(self.pool1(F.relu(self.conv3_bn(self.conv3(x)))))
-        x = self.drop4(self.pool1(F.relu(self.conv4_bn(self.conv4(x)))))
+#         x = self.drop2(x)
+        x = self.pool1(F.leaky_relu(self.conv3_bn(self.conv3(x))))
+#         x = self.drop3(x)
+        x = self.pool1(F.leaky_relu(self.conv4_bn(self.conv4(x))))
+#         x = self.drop4(x)
 #         x = self.drop5(self.pool1(F.relu(self.conv5(x))))
         x = x.view(x.size(0), -1)
-        x = self.drop6(F.relu(self.fc1_bn(self.fc1(x))))
-        x = self.drop7(F.relu(self.fc2_bn(self.fc2(x))))
+        x = F.leaky_relu(self.fc1_bn(self.fc1(x)))
+        x = self.drop6(x)
+        x = F.leaky_relu(self.fc2_bn(self.fc2(x)))
+        x = self.drop7(x)
         
         
         
